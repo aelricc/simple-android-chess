@@ -89,21 +89,30 @@ public class King extends Piece{
      * @param b Board state
      */
     public void Castle(int newX, int newY, Board b) {//need tofixthis
-        int offset;
-        if(newX == 2){offset = 1;} else {offset = -1;}
-        switch (newY) {
-            case (0):
-                updatePosition(newX, newY);
-                b.board[newX + offset][newY] = new Rook(this.color, newX-1, newY);
-                b.board[newX + offset][newY].setHasMoved(true);
-                b.clearSquare(0, newY);
-                break;
-            case (7):
-                updatePosition(newX, newY);
-                b.board[newX - 2][newY] = new Rook(this.color, newX-1, newY);
-                b.board[newX - 2][newY].setHasMoved(true);
-                b.clearSquare(0, newY);
-                break;
+        if(newX == 2 && newY == 0){
+            updatePosition(newX, newY);
+            b.board[3][0] = new Rook(this.color, 3, 0);
+            b.board[3][0].setHasMoved(true);
+            b.clearSquare(0, 0);
         }
+        else if(newX == 6 && newY == 0){
+            updatePosition(newX, newY);
+            b.board[5][0] = new Rook(this.color, 5, 0);
+            b.board[5][0].setHasMoved(true);
+            b.clearSquare(7, 0);
+        }
+        else if(newX == 2 && newY == 7){
+            updatePosition(newX, newY);
+            b.board[3][7] = new Rook(this.color, 3, 7);
+            b.board[3][7].setHasMoved(true);
+            b.clearSquare(0, 7);
+        }
+        else if(newX == 6 && newY == 7){
+            updatePosition(newX, newY);
+            b.board[5][7] = new Rook(this.color, 5, 7);
+            b.board[5][7].setHasMoved(true);
+            b.clearSquare(7, 7);
+        }
+
     }
 }
