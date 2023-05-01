@@ -1,13 +1,16 @@
 package com.example.androidchess;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.androidchess.chess.Board;
+import com.example.androidchess.chess.Chess;
 import com.example.androidchess.pieces.*;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -17,9 +20,33 @@ public class ChessGameActivity extends AppCompatActivity {
 
     static Piece[] numbers = new Piece[64];
     static Piece[][] actualBoard = new Piece[8][8];
+    PLAYER[] current;
+    TextView status;
+
+    public enum GAMESTATE{
+        /** Active game */
+        ACTIVE,
+        /** Black wins */
+        BLACKWIN,
+        /** White wins */
+        WHITEWIN,
+        /** Game is a draw */
+        DRAW,
+
+        UNDO
+    }
+
+    public enum PLAYER{
+        BLACK, WHITE
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //status.setText("White's turn!");
+        current = new PLAYER[1];
+        current[0] = PLAYER.WHITE;
+        GAMESTATE game = GAMESTATE.ACTIVE;
+        //status = (TextView) status.getRootView().findViewById(R.id.TurnName);
         Board testBoard = new Board();
         BlankSquare b = new BlankSquare("b");
         BlankSquare w = new BlankSquare("w");
@@ -35,7 +62,6 @@ public class ChessGameActivity extends AppCompatActivity {
                 numbers[i] = tile;
         }
          **/
-
         numbers = flattenArray(testBoard.board, numbers);
 
         super.onCreate(savedInstanceState);
@@ -48,7 +74,6 @@ public class ChessGameActivity extends AppCompatActivity {
         final boolean[] isFirstPieceSelected = {false};
         final int[] prevX = {0};
         final int[] prevY = {0};
-        final String[] color = {null};
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
@@ -68,27 +93,32 @@ public class ChessGameActivity extends AppCompatActivity {
                     /*
                  */
 
+                String color = "w";
+                if(current[0] == PLAYER.BLACK){
+                    color = "b";
+                }
+
                 if(isFirstPieceSelected[0]){
                     ((CustomView)v).display(false);
                     ((CustomView)prevSelected[0]).display(false);
                     try {
-                        testBoard.movePiece(color[0], prevX[0], prevY[0], xpos, ypos);
-                        Snackbar.make(v, "Safely moved piece from: " + prevX[0] + ", " + prevY[0] + " to "+ xpos + ", " + ypos, Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
+                        testBoard.movePiece(color, prevX[0], prevY[0], xpos, ypos);
+                       //Snackbar.make(v, "Safely moved piece from: " + prevX[0] + ", " + prevY[0] + " to "+ xpos + ", " + ypos, Snackbar.LENGTH_LONG)
+                        //.setAction("Action", null).show();
                         numbers = flattenArray(testBoard.board, numbers);
                         adapter.notifyDataSetChanged();
                         gridView.invalidate();
                         adapter.selectedPositions.clear();
                         isFirstPieceSelected[0] = false;
+                        nextTurn();
                     } catch (Exception e) {
-                        Snackbar.make(v, "Invalid move!", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
+                        //Snackbar.make(v, "Invalid move!", Snackbar.LENGTH_LONG)
+                                //.setAction("Action", null).show();
                         adapter.selectedPositions.clear();
                         isFirstPieceSelected[0] = false;
                     }
                 }
                 else{
-                    color[0] = ((Piece)adapter.getItem(position)).getColor();
                     adapter.selectedPositions.add(position);
                     ((CustomView)v).display(true);
                     prevSelected[0] = (CustomView)v;
@@ -111,6 +141,17 @@ public class ChessGameActivity extends AppCompatActivity {
             }
         }
         return twodee;
+    }
+
+    public void nextTurn(){
+        if(current[0] == PLAYER.WHITE){
+            current[0] = PLAYER.BLACK;
+            //status.setText(R.string.black_s_turn);
+        }
+        else{
+            current[0] = PLAYER.WHITE;
+            //status.setText(R.string.white_s_turn);
+        }
     }
 
 }

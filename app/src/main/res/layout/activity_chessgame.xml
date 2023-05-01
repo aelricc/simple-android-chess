@@ -18,6 +18,30 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="63dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/undo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="100dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:text="Undo" />
+
+            <Button
+                android:id="@+id/AI"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="100dp"
+                android:layout_weight="1"
+                android:text="AI" />
+        </LinearLayout>
+
         <GridView
             android:id="@+id/chessboard"
             android:layout_width="360dp"
@@ -25,6 +49,41 @@
             android:horizontalSpacing="0dp"
             android:numColumns="8"
             android:verticalSpacing="0dp" />
+
+        <TextView
+            android:id="@+id/TurnName"
+            android:layout_width="111dp"
+            android:layout_height="42dp"
+            android:gravity="center"
+            android:text="White's move!" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/draw"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="80dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Draw" />
+
+            <Button
+                android:id="@+id/resign"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="80dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Resign" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
