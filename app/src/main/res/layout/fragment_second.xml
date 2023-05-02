@@ -23,10 +23,11 @@
         <ListView
             android:layout_width="348dp"
             android:layout_height="553dp"
-            tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="64dp">
-
-        </ListView>
+            android:layout_marginTop="80dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.492"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

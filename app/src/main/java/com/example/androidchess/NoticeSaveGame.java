@@ -8,13 +8,15 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.widget.EditText;
 
+import java.io.IOException;
+
 public class NoticeSaveGame extends SaveGame{
 
     /* The activity that creates an instance of this dialog fragment must
      * implement this interface in order to receive event callbacks.
      * Each method passes the DialogFragment in case the host needs to query it. */
     public interface NoticeSaveGameListener {
-        public void onDialogPositiveSaveClick(SaveGame dialog, String name);
+        public void onDialogPositiveSaveClick(SaveGame dialog, String name) throws IOException, ClassNotFoundException;
         public void onDialogNegativeSaveClick(SaveGame dialog);
     }
 
@@ -46,7 +48,11 @@ public class NoticeSaveGame extends SaveGame{
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         String value = input.getText().toString();
-                        listener.onDialogPositiveSaveClick(NoticeSaveGame.this, value);
+                        try {
+                            listener.onDialogPositiveSaveClick(NoticeSaveGame.this, value);
+                        } catch (IOException | ClassNotFoundException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

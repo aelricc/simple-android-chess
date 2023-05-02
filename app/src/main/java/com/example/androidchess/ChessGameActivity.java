@@ -13,6 +13,7 @@ import com.example.androidchess.chess.Board;
 import com.example.androidchess.pieces.*;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class ChessGameActivity extends AppCompatActivity implements NoticeResignDialog.NoticeDialogListener, NoticeSaveGame.NoticeSaveGameListener {
@@ -150,10 +151,10 @@ public class ChessGameActivity extends AppCompatActivity implements NoticeResign
         final Button undo = findViewById(R.id.undo);
         undo.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(current[0] == PLAYER.WHITE){
+                if(current[0] == PLAYER.WHITE && !savedGame.isEmpty()){
                     testBoard.undo();
                     savedGame.undo();
-                    Snackbar.make(v, "Undid black's last move", Snackbar.LENGTH_LONG)
+                    Snackbar.make(v, "Undid black's last move", Snackbar.LENGTH_SHORT)
                             .setAction("Action", null).show();
                     numbers = flattenArray(testBoard.board, numbers);
                     adapter.notifyDataSetChanged();
@@ -161,16 +162,20 @@ public class ChessGameActivity extends AppCompatActivity implements NoticeResign
                     current[0] = PLAYER.BLACK;
                     status.setText("Black's move!");
                 }
-                else{
+                else if (current[0] == PLAYER.BLACK && !savedGame.isEmpty()){
                     testBoard.undo();
                     savedGame.undo();
-                    Snackbar.make(v, "Undid white's last move", Snackbar.LENGTH_LONG)
+                    Snackbar.make(v, "Undid white's last move", Snackbar.LENGTH_SHORT)
                             .setAction("Action", null).show();
                     numbers = flattenArray(testBoard.board, numbers);
                     adapter.notifyDataSetChanged();
                     gridView.invalidate();
                     current[0] = PLAYER.WHITE;
                     status.setText("White's move!");
+                }
+                else{
+                    Snackbar.make(v, "No moves to undo!", Snackbar.LENGTH_SHORT)
+                            .setAction("Action", null).show();
                 }
             }
         });
@@ -179,8 +184,9 @@ public class ChessGameActivity extends AppCompatActivity implements NoticeResign
         AI.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(current[0] == PLAYER.WHITE){
-                    testBoard.random("w");
-                    Snackbar.make(v, "AI moved for white!", Snackbar.LENGTH_LONG)
+                    Move random = testBoard.random("w");
+                    savedGame.addMove(random);
+                    Snackbar.make(v, "AI moved for white!", Snackbar.LENGTH_SHORT)
                             .setAction("Action", null).show();
                     numbers = flattenArray(testBoard.board, numbers);
                     adapter.notifyDataSetChanged();
@@ -190,8 +196,9 @@ public class ChessGameActivity extends AppCompatActivity implements NoticeResign
                     status.setText("Black's move!");
                     }
                 else{
-                    testBoard.random("b");
-                    Snackbar.make(v, "AI moved for black!", Snackbar.LENGTH_LONG)
+                    Move random = testBoard.random("b");
+                    savedGame.addMove(random);
+                    Snackbar.make(v, "AI moved for black!", Snackbar.LENGTH_SHORT)
                             .setAction("Action", null).show();
                     numbers = flattenArray(testBoard.board, numbers);
                     adapter.notifyDataSetChanged();
@@ -249,8 +256,11 @@ public class ChessGameActivity extends AppCompatActivity implements NoticeResign
     }
 
     @Override
-    public void onDialogPositiveSaveClick(SaveGame dialog, String name) {
+    public void onDialogPositiveSaveClick(SaveGame dialog, String name) throws IOException, ClassNotFoundException {
+        GameList pog = GameList.readGames();
         savedGame.setName(name);
+        pog.add(savedGame);
+        GameList.saveGame(pog);
         finish();
     }
 

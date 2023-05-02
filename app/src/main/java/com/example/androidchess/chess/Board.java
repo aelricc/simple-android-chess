@@ -1,4 +1,5 @@
 package com.example.androidchess.chess;
+import com.example.androidchess.Move;
 import com.example.androidchess.pieces.*;
 import java.util.Objects;
 
@@ -258,7 +259,7 @@ public class Board {
         return !isInCheck(color, tempB);
     }
 
-    public void random(String color){
+    public Move random(String color){
         boolean found = false;
         while(!found){
             int curr_x = (int)(Math.random()*(7+1)+0);
@@ -267,11 +268,12 @@ public class Board {
             int new_y =  (int)(Math.random()*(7+1)+0);
             try {
                 movePiece(color, curr_x, curr_y, new_x, new_y);
-                found = true;
+                return new Move(curr_x, curr_y, new_x, new_y);
             }catch(Exception e) {
                 continue;
             }
         }
+        return null;
     }
 
     public void saveState(){

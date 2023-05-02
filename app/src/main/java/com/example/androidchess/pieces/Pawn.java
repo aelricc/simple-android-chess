@@ -131,8 +131,8 @@ public class Pawn extends Piece {
      * @return True is enpassant is a legal move, false if not
      */
     public boolean tryEnpassant(int newX, int newY, Board b, String color){
-        Piece wcheckpass = b.board[newX][newY-1];
-        Piece bcheckpass = b.board[newX][newY+1];
+        Piece wcheckpass = b.board[newX][newY+1];
+        Piece bcheckpass = b.board[newX][newY-1];
 
         if(Objects.equals(color, "w") && (!Objects.equals(wcheckpass.getColor(), color))){
             return (wcheckpass instanceof Pawn && ((Pawn)wcheckpass).getEnPassant());

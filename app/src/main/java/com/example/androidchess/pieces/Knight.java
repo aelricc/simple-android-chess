@@ -1,4 +1,6 @@
 package com.example.androidchess.pieces;
+import static java.lang.Math.abs;
+
 import com.example.androidchess.chess.Board;
 
 /**
@@ -41,8 +43,10 @@ public class Knight extends Piece{
     @Override
     public boolean validMove(int oldX, int oldY, int newX, int newY, boolean isCapture, Board b){
         double s = ((double)newY - (double)oldY)/((double)newX - (double)oldX);
+        double xdiff = abs(newX - oldX);
+        double ydiff = abs(newY - oldY);
         //System.out.println(s);
-        if(s == -2||s == 2||s == -0.5||s == 0.5){
+        if((s == -2||s == 2||s == -0.5||s == 0.5) && (xdiff <= 2 && ydiff <=2)){
             updatePosition(newX, newY);
             return true;
         }

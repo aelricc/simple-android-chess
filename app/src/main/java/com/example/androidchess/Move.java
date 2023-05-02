@@ -1,9 +1,14 @@
 package com.example.androidchess;
 
 
-public class Move{
+import java.io.Serializable;
+
+public class Move implements Serializable {
     int oldX, oldY, newX, newY;
     String type;
+
+    static final long serialVersionUID = 1L;
+
     public Move(int oldX, int oldY, int newX, int newY){
         this.oldX = oldX;
         this.oldY = oldY;

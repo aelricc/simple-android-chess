@@ -24,22 +24,24 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/undo"
-                android:layout_width="wrap_content"
+                android:id="@+id/draw"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="100dp"
+                android:layout_marginLeft="80dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
-                android:text="Undo" />
+                android:gravity="center"
+                android:text="Draw" />
 
             <Button
-                android:id="@+id/AI"
-                android:layout_width="wrap_content"
+                android:id="@+id/resign"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="100dp"
+                android:layout_marginRight="80dp"
                 android:layout_weight="1"
-                android:text="AI" />
+                android:gravity="center"
+                android:text="Resign" />
         </LinearLayout>
 
         <GridView
@@ -63,25 +65,22 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/draw"
-                android:layout_width="150dp"
+                android:id="@+id/undo"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="80dp"
+                android:layout_marginLeft="100dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:text="Draw" />
+                android:text="Undo" />
 
             <Button
-                android:id="@+id/resign"
-                android:layout_width="150dp"
+                android:id="@+id/AI"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="80dp"
+                android:layout_marginRight="100dp"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:text="Resign" />
-
+                android:text="AI" />
         </LinearLayout>
 
     </LinearLayout>

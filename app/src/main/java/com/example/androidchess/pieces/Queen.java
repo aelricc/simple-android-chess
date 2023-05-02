@@ -41,7 +41,7 @@ public class Queen extends Piece implements LinearPiece{
 
     @Override
     public boolean validMove(int oldX, int oldY, int newX, int newY, boolean isCapture, Board b) {
-        if(oldX == newX || newY == oldY || Math.abs(newX - oldX) == Math.abs(newY - oldY)){
+        if((oldX == newX || newY == oldY || Math.abs(newX - oldX) == Math.abs(newY - oldY)) && !hasPiecesInBetween(oldX, oldY, newX, newY, b)){
             updatePosition(newX, newY);
             hasMoved = true;
             return true;
