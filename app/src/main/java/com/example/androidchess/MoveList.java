@@ -20,12 +20,16 @@ public class MoveList implements Parcelable{
 
     public MoveList() {
         this.moves = new ArrayList<>();
-        this.Name = null;
-        this.date = null;
+        this.Name = "default";
+        this.date = "MM/DD/YYYY";
     }
 
+
     protected MoveList(Parcel in) {
+        moves = in.createTypedArrayList(Move.CREATOR);
         Name = in.readString();
+        date = in.readString();
+        orderAdded = in.readInt();
     }
 
     public static final Creator<MoveList> CREATOR = new Creator<MoveList>() {
@@ -46,6 +50,10 @@ public class MoveList implements Parcelable{
 
     public Move getMove(int i) {
         return moves.get(i);
+    }
+
+    public ArrayList<Move> getActualList() {
+        return moves;
     }
 
     public void setName(String s) {
@@ -84,20 +92,14 @@ public class MoveList implements Parcelable{
         return moves.isEmpty();
     }
 
+    public int getSize() {
+        return moves.size();
+    }
+
     public String toString() {
-        return Name + ": " + this.moves.toString() + " Date: " + date;
+        return Name + ": " + moves + " Date: " + date;
     }
 
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(@NonNull Parcel parcel, int i) {
-        parcel.writeString(Name);
-    }
 
     public static Comparator<MoveList> StuNameComparator = new Comparator<MoveList>() {
         // Comparing attributes of students
@@ -122,4 +124,17 @@ public class MoveList implements Parcelable{
             return rollno1 - rollno2;
         }
     };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel parcel, int i) {
+        parcel.writeTypedList(moves);
+        parcel.writeString(Name);
+        parcel.writeString(date);
+        parcel.writeInt(orderAdded);
+    }
 }

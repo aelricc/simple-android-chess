@@ -75,4 +75,6 @@
     <string name="string_white_s_move">White\'s move!</string>
     <string name="ok">Ok</string>
     <string name="cancel">Cancel\n</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

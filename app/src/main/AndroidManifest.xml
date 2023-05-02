@@ -23,7 +23,7 @@
         </activity>
         <activity android:name=".ChessGameActivity" >
         </activity>
-        <activity android:name=".ViewGameActivity">
+        <activity android:name=".ViewActivity" >
         </activity>
     </application>
 

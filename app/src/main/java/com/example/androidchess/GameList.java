@@ -21,7 +21,9 @@ public class GameList implements Parcelable {
         this.games = new ArrayList<>();
     }
 
+
     protected GameList(Parcel in) {
+        games = in.createTypedArrayList(MoveList.CREATOR);
     }
 
     public static final Creator<GameList> CREATOR = new Creator<GameList>() {
@@ -44,14 +46,6 @@ public class GameList implements Parcelable {
         games.add(game);
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(@NonNull Parcel parcel, int i) {
-    }
 
     public String toString(){
         return games.toString();
@@ -63,5 +57,15 @@ public class GameList implements Parcelable {
 
     public int size(){
         return games.size();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel parcel, int i) {
+        parcel.writeTypedList(games);
     }
 }

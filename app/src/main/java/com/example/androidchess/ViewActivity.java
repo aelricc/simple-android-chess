@@ -15,10 +15,11 @@ import com.example.androidchess.pieces.BlankSquare;
 import com.example.androidchess.pieces.Piece;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class ViewGameActivity extends AppCompatActivity{
+public class ViewActivity extends AppCompatActivity{
 
     static Piece[] numbers = new Piece[64];
     MoveList thisGame;
@@ -64,37 +65,41 @@ public class ViewGameActivity extends AppCompatActivity{
         status.setText("White's move!");
 
         //savedGame.clear();
-        thisGame = (MoveList) getIntent().getParcelableExtra("game");
+        thisGame = getIntent().getParcelableExtra("game");
+
         final Button next = findViewById(R.id.next);
         moveCounter = 0;
         next.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                System.out.println(thisGame);
-                /*
-                String color = "w";
-                if(current[0] == PLAYER.BLACK){
-                    color = "b";
-                }
-                game = GAMESTATE.WIN;
-                Move currMove = savedGame.getMove(moveCounter);
-                try {
-                    testBoard.movePiece(color, currMove.getOldX(), currMove.getOldY(), currMove.getNewX(), currMove.getNewY());
-                    numbers = flattenArray(testBoard.board, numbers);
-                    adapter.notifyDataSetChanged();
-                    gridView.invalidate();
-                    if(current[0] == PLAYER.WHITE){
-                        current[0] = PLAYER.BLACK;
-                        status.setText("Black's move!");
+                if(moveCounter != thisGame.getSize()-1){
+                    Move currMove = thisGame.getMove(moveCounter);
+
+                    String color = "w";
+                    if(current[0] == PLAYER.BLACK){
+                        color = "b";
                     }
-                    else{
-                        current[0] = PLAYER.WHITE;
-                        status.setText("White's move!");
+                    game = GAMESTATE.WIN;
+                    try {
+                        testBoard.movePiece(color, currMove.getOldX(), currMove.getOldY(), currMove.getNewX(), currMove.getNewY());
+                        numbers = flattenArray(testBoard.board, numbers);
+                        adapter.notifyDataSetChanged();
+                        gridView.invalidate();
+                        if(current[0] == PLAYER.WHITE){
+                            current[0] = PLAYER.BLACK;
+                            status.setText("Black's move!");
+                        }
+                        else{
+                            current[0] = PLAYER.WHITE;
+                            status.setText("White's move!");
+                        }
+                        moveCounter++;
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
                     }
-                    moveCounter++;
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
                 }
-                */
+                else{
+                    finish();
+                }
             }
         });
     }

@@ -49,6 +49,8 @@ public class WelcomeFragment extends Fragment {
                             System.out.println(gamelist.isEmpty());
                             System.out.println(gamelist.size());
                             System.out.println(gamelist.games.get(0).getDate());
+                            System.out.println(pog.getDate());
+                            System.out.println(pog.getName());
                         }
                     }
                 });

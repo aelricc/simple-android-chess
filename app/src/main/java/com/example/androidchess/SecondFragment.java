@@ -47,7 +47,6 @@ public class SecondFragment extends Fragment {
         GameList gameList = new GameList();
         gameList = getArguments().getParcelable("gamelist");
         allGames = gameList.getGames();
-        ArrayList<MoveList> temp = allGames;
         //allGames = new ArrayList<>();
         if(!allGames.isEmpty()){
             for(int i = 0; i < allGames.size(); i++){
@@ -80,7 +79,8 @@ public class SecondFragment extends Fragment {
                                     int position, long id) {
 
                 MoveList game = allGames.get(position);
-                Intent i = new Intent(getActivity(), ViewGameActivity.class);
+                System.out.println(game);
+                Intent i = new Intent(getActivity(), ViewActivity.class);
                 i.putExtra("game", game);
                 startActivity(i);
 
