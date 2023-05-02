@@ -14,6 +14,7 @@ public class Board {
     /** Array that tracks the empty board*/
     public Piece[][] tiles;
     /** Size of the board*/
+    public Piece[][] prevState;
     public static int SIZE = 8;
     /** Position of the white King*/
     public int[] whiteKingLocation;
@@ -33,6 +34,7 @@ public class Board {
         //toDo: change to Piece object instead?
         board = new Piece[SIZE][SIZE];
         tiles = new Piece[SIZE][SIZE];
+        prevState = new Piece[SIZE][SIZE];
         BlankSquare b = new BlankSquare("b");
         BlankSquare w = new BlankSquare("w");
         /*
@@ -124,7 +126,6 @@ public class Board {
      *
      * @author Ashhad Siddiqui and John Bailon
      * @param color Color of the piece attempting to move
-     * @param input String that contains starting and ending move
      * @throws Exception Illegal Move Exception
      */
     public void movePiece(String color, int curr_x, int curr_y, int new_x, int new_y) throws Exception {
@@ -143,6 +144,7 @@ public class Board {
             throw new Exception("Illegal move!");
         }
         else if(current.validMove(curr_x, curr_y, new_x, new_y, isCapture, this)){
+            saveState();
             board[new_x][new_y] = current;
             //replacing tile that current piece leaves with original color, stored in tiles
             clearSquare(curr_x, curr_y);
@@ -254,5 +256,33 @@ public class Board {
             }
         }
         return !isInCheck(color, tempB);
+    }
+
+    public void random(String color){
+        boolean found = false;
+        while(!found){
+            int curr_x = (int)(Math.random()*(7+1)+0);
+            int curr_y = (int)(Math.random()*(7+1)+0);
+            int new_x =  (int)(Math.random()*(7+1)+0);
+            int new_y =  (int)(Math.random()*(7+1)+0);
+            try {
+                movePiece(color, curr_x, curr_y, new_x, new_y);
+                found = true;
+            }catch(Exception e) {
+                continue;
+            }
+        }
+    }
+
+    public void saveState(){
+        for (int i = 0; i < 8; i++) {
+            prevState[i] = board[i].clone();
+        }
+    }
+
+    public void undo(){
+        for (int i = 0; i < 8; i++) {
+            board[i] = prevState[i].clone();
+        }
     }
 }

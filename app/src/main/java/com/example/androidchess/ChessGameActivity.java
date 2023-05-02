@@ -1,39 +1,39 @@
 package com.example.androidchess;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.androidchess.chess.Board;
-import com.example.androidchess.chess.Chess;
 import com.example.androidchess.pieces.*;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
-public class ChessGameActivity extends AppCompatActivity {
+public class ChessGameActivity extends AppCompatActivity implements NoticeResignDialog.NoticeDialogListener, NoticeSaveGame.NoticeSaveGameListener {
 
     static Piece[] numbers = new Piece[64];
     static Piece[][] actualBoard = new Piece[8][8];
+    MoveList savedGame;
     PLAYER[] current;
-    TextView status;
+    GAMESTATE game;
+
 
     public enum GAMESTATE{
         /** Active game */
         ACTIVE,
         /** Black wins */
-        BLACKWIN,
+        WIN,
         /** White wins */
-        WHITEWIN,
         /** Game is a draw */
         DRAW,
 
-        UNDO
+        CLOSED
     }
 
     public enum PLAYER{
@@ -42,26 +42,13 @@ public class ChessGameActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //status.setText("White's turn!");
+        game = GAMESTATE.ACTIVE;
         current = new PLAYER[1];
         current[0] = PLAYER.WHITE;
-        GAMESTATE game = GAMESTATE.ACTIVE;
-        //status = (TextView) status.getRootView().findViewById(R.id.TurnName);
         Board testBoard = new Board();
         BlankSquare b = new BlankSquare("b");
         BlankSquare w = new BlankSquare("w");
-        /**
-        for(int i = 0; i < 64; i++) {
-            int xpos = i/8;
-            int ypos = i%8;
-            BlankSquare tile = w;
-            if ((ypos % 2 == 0 && xpos % 2 !=0) || (ypos % 2 != 0 && xpos % 2 == 0)) {
-                tile = b;
-            }
-                tile.updatePosition(xpos, ypos);
-                numbers[i] = tile;
-        }
-         **/
+
         numbers = flattenArray(testBoard.board, numbers);
 
         super.onCreate(savedInstanceState);
@@ -74,6 +61,11 @@ public class ChessGameActivity extends AppCompatActivity {
         final boolean[] isFirstPieceSelected = {false};
         final int[] prevX = {0};
         final int[] prevY = {0};
+        final TextView status = (TextView) findViewById(R.id.TurnName);
+        status.setText("White's move!");
+
+        //savedGame.clear();
+        MoveList savedGame = new MoveList();
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
@@ -103,14 +95,22 @@ public class ChessGameActivity extends AppCompatActivity {
                     ((CustomView)prevSelected[0]).display(false);
                     try {
                         testBoard.movePiece(color, prevX[0], prevY[0], xpos, ypos);
+                        savedGame.addMove(new Move(prevX[0], prevY[0], xpos, ypos));
                        //Snackbar.make(v, "Safely moved piece from: " + prevX[0] + ", " + prevY[0] + " to "+ xpos + ", " + ypos, Snackbar.LENGTH_LONG)
                         //.setAction("Action", null).show();
                         numbers = flattenArray(testBoard.board, numbers);
                         adapter.notifyDataSetChanged();
                         gridView.invalidate();
-                        adapter.selectedPositions.clear();
                         isFirstPieceSelected[0] = false;
-                        nextTurn();
+                        if(current[0] == PLAYER.WHITE){
+                            current[0] = PLAYER.BLACK;
+                            status.setText("Black's move!");
+                        }
+                        else{
+                            current[0] = PLAYER.WHITE;
+                            status.setText("White's move!");
+                        }
+                        adapter.selectedPositions.clear();
                     } catch (Exception e) {
                         //Snackbar.make(v, "Invalid move!", Snackbar.LENGTH_LONG)
                                 //.setAction("Action", null).show();
@@ -130,6 +130,79 @@ public class ChessGameActivity extends AppCompatActivity {
             }
             //}
         });
+
+        final Button resign = findViewById(R.id.resign);
+        resign.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                game = GAMESTATE.WIN;
+                openResignDialog();
+            }
+        });
+
+        final Button draw = findViewById(R.id.draw);
+        draw.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                game = GAMESTATE.DRAW;
+                openResignDialog();
+            }
+        });
+
+        final Button undo = findViewById(R.id.undo);
+        undo.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if(current[0] == PLAYER.WHITE){
+                    testBoard.undo();
+                    savedGame.undo();
+                    Snackbar.make(v, "Undid black's last move", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                    numbers = flattenArray(testBoard.board, numbers);
+                    adapter.notifyDataSetChanged();
+                    gridView.invalidate();
+                    current[0] = PLAYER.BLACK;
+                    status.setText("Black's move!");
+                }
+                else{
+                    testBoard.undo();
+                    savedGame.undo();
+                    Snackbar.make(v, "Undid white's last move", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                    numbers = flattenArray(testBoard.board, numbers);
+                    adapter.notifyDataSetChanged();
+                    gridView.invalidate();
+                    current[0] = PLAYER.WHITE;
+                    status.setText("White's move!");
+                }
+            }
+        });
+
+        final Button AI = findViewById(R.id.AI);
+        AI.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if(current[0] == PLAYER.WHITE){
+                    testBoard.random("w");
+                    Snackbar.make(v, "AI moved for white!", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                    numbers = flattenArray(testBoard.board, numbers);
+                    adapter.notifyDataSetChanged();
+                    gridView.invalidate();
+                    isFirstPieceSelected[0] = false;
+                    current[0] = PLAYER.BLACK;
+                    status.setText("Black's move!");
+                    }
+                else{
+                    testBoard.random("b");
+                    Snackbar.make(v, "AI moved for black!", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                    numbers = flattenArray(testBoard.board, numbers);
+                    adapter.notifyDataSetChanged();
+                    gridView.invalidate();
+                    current[0] = PLAYER.WHITE;
+                    status.setText("White's move!");}
+
+            }
+        });
+
+
     }
 
     public Piece[] flattenArray(Piece[][] threedee, Piece[] twodee){
@@ -143,15 +216,47 @@ public class ChessGameActivity extends AppCompatActivity {
         return twodee;
     }
 
-    public void nextTurn(){
-        if(current[0] == PLAYER.WHITE){
-            current[0] = PLAYER.BLACK;
-            //status.setText(R.string.black_s_turn);
+    public void openResignDialog(){
+        ResignDialog exampleDialog = new NoticeResignDialog();
+        if(game == GAMESTATE.DRAW){
+            exampleDialog.setEndgame("draw");
         }
-        else{
-            current[0] = PLAYER.WHITE;
-            //status.setText(R.string.white_s_turn);
+        else if(current[0] == PLAYER.WHITE){
+            exampleDialog.setColor("Black");
         }
+        else if(current[0] == PLAYER.BLACK){
+            exampleDialog.setColor("White");
+        }
+        exampleDialog.show(getSupportFragmentManager(), "NoticeResignDialog");
+    }
+
+    // The dialog fragment receives a reference to this Activity through the
+    // Fragment.onAttach() callback, which it uses to call the following methods
+    // defined by the NoticeDialogFragment.NoticeDialogListener interface
+    @Override
+    public void onDialogPositiveClick(ResignDialog dialog) {
+        openSaveGame();
+    }
+
+    @Override
+    public void onDialogNegativeClick(ResignDialog dialog) {
+        finish();
+    }
+
+    public void openSaveGame(){
+        SaveGame game = new SaveGame();
+        game.show(getSupportFragmentManager(), "save dialog");
+    }
+
+    @Override
+    public void onDialogPositiveSaveClick(SaveGame dialog, String name) {
+        savedGame.setName(name);
+        finish();
+    }
+
+    @Override
+    public void onDialogNegativeSaveClick(SaveGame dialog) {
+        finish();
     }
 
 }

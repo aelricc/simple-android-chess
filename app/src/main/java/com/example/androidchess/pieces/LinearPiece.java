@@ -24,7 +24,6 @@ public interface LinearPiece {
         if(oldX == newX && oldY != newY){
             //If equal, newY > oldY, go up (+1)
             int counter = Math.abs(newY - oldY) == (newY - oldY) ? 1 : -1;
-
             for(int i = oldY+counter; i != newY; i +=counter){
                 if(!(b.board[oldX][i] instanceof BlankSquare)){
                     return true;
@@ -35,7 +34,6 @@ public interface LinearPiece {
         if(oldX != newX && oldY == newY ){
             //If equal, newX > oldX, go right (+1)
             int counter = Math.abs(newX - oldX) == (newX - oldX) ? 1 : -1;
-
             for(int i=oldX+counter; i != newX; i+=counter){
                 if(!(b.board[i][oldY] instanceof BlankSquare)){
                     return true;

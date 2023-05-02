@@ -69,6 +69,10 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="title_activity_active_game">ActiveGame</string>
     <string name="title_activity_main2">MainActivity2</string>
-    <string name="black_s_turn">Black\'s turn!</string>
-    <string name="white_s_turn">White\'s turn!</string>
+    <string name="white_s_move">White\'s move!</string>
+    <string name="black_s_move">Black\'s move!</string>
+    <string name="string_black_s_move">\@string/black_s_move</string>
+    <string name="string_white_s_move">White\'s move!</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel\n</string>
 </resources>

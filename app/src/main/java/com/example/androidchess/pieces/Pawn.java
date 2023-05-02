@@ -60,7 +60,7 @@ public class Pawn extends Piece {
                 this.enpassant = false;
                 return true;
             }
-            else if(tryEnpassant(newX, newY, board, "w") && (newY-oldY == 1) && (newX-oldX == 1||newX-oldX == -1)){
+            else if(tryEnpassant(newX, newY, board, "b") && (newY-oldY == 1) && (newX-oldX == 1||newX-oldX == -1)){
                 board.clearSquare(newX, newY-1);
                 updatePosition(newX, newY);
                 this.enpassant = false;
@@ -85,7 +85,7 @@ public class Pawn extends Piece {
                 this.enpassant = false;
                 return true;
             }
-            else if(tryEnpassant(newX, newY, board, "b") && (newY-oldY == -1) && (newX-oldX == 1||newX-oldX == -1)){
+            else if(tryEnpassant(newX, newY, board, "w") && (newY-oldY == -1) && (newX-oldX == 1||newX-oldX == -1)){
                 board.clearSquare(newX, newY+1);
                 updatePosition(newX, newY);
                 this.enpassant = false;
