@@ -50,7 +50,7 @@ public class King extends Piece{
         }
         else if(newX == 6
                 && !this.hasMoved
-                && (newY == 0 || newY == 7)
+                && (newY == 0 && this.color.equals("b") || (newY == 7 && this.color.equals("w")))
                 && b.board[7][newY] instanceof Rook
                 && !(b.board[7][newY]).getHasMoved()){
             Castle(newX, newY, b);
@@ -58,7 +58,7 @@ public class King extends Piece{
         }
         else if(newX == 2
                 && !this.hasMoved
-                && (newY == 0 || newY == 7)
+                && (newY == 0 && this.color.equals("b")|| (newY == 7 && this.color.equals("w")))
                 && b.board[0][newY] instanceof Rook
                 && !(b.board[0][newY]).getHasMoved()){
             Castle(newX, newY, b);
