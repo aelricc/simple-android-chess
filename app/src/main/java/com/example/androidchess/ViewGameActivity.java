@@ -21,13 +21,11 @@ import java.util.Date;
 public class ViewGameActivity extends AppCompatActivity{
 
     static Piece[] numbers = new Piece[64];
-    static Piece[][] actualBoard = new Piece[8][8];
-    MoveList savedGame;
-    GameList allGames;
+    MoveList thisGame;
     PLAYER[] current;
     GAMESTATE game;
 
-    int moveCounter = 0;
+    int moveCounter;
 
     public enum GAMESTATE{
         /** Active game */
@@ -62,83 +60,17 @@ public class ViewGameActivity extends AppCompatActivity{
         GridView gridView = (GridView) findViewById(R.id.chessboard);
         final CustomAdapter adapter = new CustomAdapter(numbers);
         gridView.setAdapter(adapter);
-        final CustomView[] prevSelected = new CustomView[1];
-        final boolean[] isFirstPieceSelected = {false};
-        final int[] prevX = {0};
-        final int[] prevY = {0};
         final TextView status = (TextView) findViewById(R.id.TurnName);
         status.setText("White's move!");
 
         //savedGame.clear();
-        MoveList savedGame = new MoveList();
-
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v,
-                                    int position, long id) {
-                int xpos = position%8;
-                int ypos = position/8;
-                /*
-                Snackbar.make(v, "pos x is: "+ xpos+"  pos y is: "+ypos, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                 */
-                int selectedIndex = adapter.selectedPositions.indexOf(position);
-                /*
-                    if (selectedIndex > -1) {
-                        adapter.selectedPositions.remove(selectedIndex);
-                        ((CustomView)v).display(false);
-                    } else {
-                    /*
-                 */
-
-                String color = "w";
-                if(current[0] == PLAYER.BLACK){
-                    color = "b";
-                }
-
-                if(isFirstPieceSelected[0]){
-                    ((CustomView)v).display(false);
-                    ((CustomView)prevSelected[0]).display(false);
-                    try {
-                        testBoard.movePiece(color, prevX[0], prevY[0], xpos, ypos);
-                        savedGame.addMove(new Move(prevX[0], prevY[0], xpos, ypos));
-                       //Snackbar.make(v, "Safely moved piece from: " + prevX[0] + ", " + prevY[0] + " to "+ xpos + ", " + ypos, Snackbar.LENGTH_LONG)
-                        //.setAction("Action", null).show();
-                        numbers = flattenArray(testBoard.board, numbers);
-                        adapter.notifyDataSetChanged();
-                        gridView.invalidate();
-                        isFirstPieceSelected[0] = false;
-                        if(current[0] == PLAYER.WHITE){
-                            current[0] = PLAYER.BLACK;
-                            status.setText("Black's move!");
-                        }
-                        else{
-                            current[0] = PLAYER.WHITE;
-                            status.setText("White's move!");
-                        }
-                        adapter.selectedPositions.clear();
-                    } catch (Exception e) {
-                        //Snackbar.make(v, "Invalid move!", Snackbar.LENGTH_LONG)
-                                //.setAction("Action", null).show();
-                        adapter.selectedPositions.clear();
-                        isFirstPieceSelected[0] = false;
-                    }
-                }
-                else{
-                    adapter.selectedPositions.add(position);
-                    ((CustomView)v).display(true);
-                    prevSelected[0] = (CustomView)v;
-                    prevY[0] = ypos;
-                    prevX[0] = xpos;
-                    isFirstPieceSelected[0] = true;
-                }
-
-            }
-            //}
-        });
-
+        thisGame = (MoveList) getIntent().getParcelableExtra("game");
         final Button next = findViewById(R.id.next);
+        moveCounter = 0;
         next.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                System.out.println(thisGame);
+                /*
                 String color = "w";
                 if(current[0] == PLAYER.BLACK){
                     color = "b";
@@ -150,7 +82,6 @@ public class ViewGameActivity extends AppCompatActivity{
                     numbers = flattenArray(testBoard.board, numbers);
                     adapter.notifyDataSetChanged();
                     gridView.invalidate();
-                    isFirstPieceSelected[0] = false;
                     if(current[0] == PLAYER.WHITE){
                         current[0] = PLAYER.BLACK;
                         status.setText("Black's move!");
@@ -159,9 +90,11 @@ public class ViewGameActivity extends AppCompatActivity{
                         current[0] = PLAYER.WHITE;
                         status.setText("White's move!");
                     }
+                    moveCounter++;
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
+                */
             }
         });
     }

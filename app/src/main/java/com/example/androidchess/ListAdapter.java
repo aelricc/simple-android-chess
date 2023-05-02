@@ -31,7 +31,6 @@ public class ListAdapter extends ArrayAdapter<MoveList> implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-
         int position=(Integer) v.getTag();
         Object object= getItem(position);
         MoveList game =(MoveList)object;
@@ -42,32 +41,12 @@ public class ListAdapter extends ArrayAdapter<MoveList> implements View.OnClickL
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
         MoveList game = getItem(position);
+        String date = game.getDate();
+        String name = game.getName();
         // Check if an existing view is being reused, otherwise inflate the view
-        ViewHolder viewHolder; // view lookup cache stored in tag
-
-        final View result;
-
-        if (convertView == null) {
-
-            viewHolder = new ViewHolder();
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.row_item, parent, false);
-            viewHolder.txtName = (TextView) convertView.findViewById(R.id.name);
-            viewHolder.txtDate = (TextView) convertView.findViewById(R.id.date);
-
-            result=convertView;
-
-            convertView.setTag(viewHolder);
-        } else {
-            viewHolder = (ViewHolder) convertView.getTag();
-            result=convertView;
-        }
-
-        viewHolder.txtName.setText(game.getName());
-        viewHolder.txtDate.setText(game.getDate());
-
-
-        // Return the completed view to render on screen
-        return convertView;
+        CustomCellView customCellView = (convertView == null) ?
+                new CustomCellView(parent.getContext()) : (CustomCellView) convertView;
+        customCellView.display(name, date);
+        return customCellView;
     }
 }
