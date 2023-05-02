@@ -1,5 +1,10 @@
 package com.example.androidchess;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import java.io.*;
 import java.util.ArrayList;
 
@@ -8,77 +13,55 @@ import java.util.ArrayList;
  *
  * @author Ashhad Siddiqui and John Bailon
  */
-public class GameList implements Serializable {
+public class GameList implements Parcelable {
     /**List of Users**/
-    public ArrayList<MoveList> actualGameList;
-    public static final String storeDir = "dat";
-    public static final String storeFile = "Games.dat";
-    static final long serialVersionUID = 1L;
+    public ArrayList<MoveList> games;
 
-    /**
-     * Constructor for a UserList
-     *
-     * @author Ashhad Siddiqui and John Bailon
-     //* @param users List of Users
-     */
-    public GameList(ArrayList<MoveList> games){
-        this.actualGameList = games;
+    public GameList(){
+        this.games = new ArrayList<>();
     }
 
-    /**
-     * Adds a user to the userlist
-     *
-     * @author Ashhad Siddiqui and John Bailon
-     // @param user User to be added
-     */
-    public void add(MoveList game){
-        actualGameList.add(game);
+    protected GameList(Parcel in) {
     }
 
-    /**
-     * Gets the user at the given position
-     *
-     * @author Ashhad Siddiqui and John Bailon
-     * @param i position of the user
-     * @return Requested user
-     */
-    public MoveList get(int i){
-        return actualGameList.get(i);
+    public static final Creator<GameList> CREATOR = new Creator<GameList>() {
+        @Override
+        public GameList createFromParcel(Parcel in) {
+            return new GameList(in);
+        }
+
+        @Override
+        public GameList[] newArray(int size) {
+            return new GameList[size];
+        }
+    };
+
+    public ArrayList<MoveList> getGames(){
+        return games;
     }
 
-    /**
-     * Getter for the user list
-     *
-     * @author Ashhad Siddiqui and John Bailon
-     * @return List of users
-     */
-    public ArrayList<MoveList> getActualGameList(){
-        return actualGameList;
+    public void addGames(MoveList game){
+        games.add(game);
     }
 
-    /**
-     * Saves users for data persistence
-     *
-     * //@param userlist Lists of users
-     * @author Ashhad Siddiqui and John Bailon
-     * @throws IOException If the file is missing
-     */
-    public static void saveGame(GameList gamelist)
-            throws IOException {
-        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Games.dat"));
-        oos.writeObject(gamelist);
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    /**
-     * Reads a list of users from a file
-     *
-     * @author Ashhad Siddiqui and John Bailon
-     * @return List of Users
-     * @throws IOException If the file is missing
-     * @throws ClassNotFoundException If the class is missing
-     */
-    public static GameList readGames() throws IOException, ClassNotFoundException {
-        ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Games.dat"));
-        return (GameList) ois.readObject();
+    @Override
+    public void writeToParcel(@NonNull Parcel parcel, int i) {
+    }
+
+    public String toString(){
+        return games.toString();
+    }
+
+    public boolean isEmpty(){
+        return games.isEmpty();
+    }
+
+    public int size(){
+        return games.size();
     }
 }

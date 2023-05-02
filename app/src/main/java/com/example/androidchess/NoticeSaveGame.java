@@ -45,7 +45,7 @@ public class NoticeSaveGame extends SaveGame{
         builder.setView(input);
         builder.setTitle("Save Game")
                 .setMessage("Please enter a title for this game:")
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         String value = input.getText().toString();
                         try {
@@ -55,7 +55,7 @@ public class NoticeSaveGame extends SaveGame{
                         }
                     }
                 })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         listener.onDialogNegativeSaveClick(NoticeSaveGame.this);
                     }

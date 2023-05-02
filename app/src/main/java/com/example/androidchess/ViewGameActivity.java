@@ -1,6 +1,5 @@
 package com.example.androidchess;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -12,16 +11,14 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.androidchess.chess.Board;
-import com.example.androidchess.pieces.*;
+import com.example.androidchess.pieces.BlankSquare;
+import com.example.androidchess.pieces.Piece;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.io.IOException;
-import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class ChessGameActivity extends AppCompatActivity implements NoticeResignDialog.NoticeDialogListener, NoticeSaveGame.NoticeSaveGameListener {
+public class ViewGameActivity extends AppCompatActivity{
 
     static Piece[] numbers = new Piece[64];
     static Piece[][] actualBoard = new Piece[8][8];
@@ -30,6 +27,7 @@ public class ChessGameActivity extends AppCompatActivity implements NoticeResign
     PLAYER[] current;
     GAMESTATE game;
 
+    int moveCounter = 0;
 
     public enum GAMESTATE{
         /** Active game */
@@ -59,7 +57,7 @@ public class ChessGameActivity extends AppCompatActivity implements NoticeResign
         numbers = flattenArray(testBoard.board, numbers);
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chessgame);
+        setContentView(R.layout.activity_viewgame);
 
         GridView gridView = (GridView) findViewById(R.id.chessboard);
         final CustomAdapter adapter = new CustomAdapter(numbers);
@@ -72,7 +70,7 @@ public class ChessGameActivity extends AppCompatActivity implements NoticeResign
         status.setText("White's move!");
 
         //savedGame.clear();
-        savedGame = new MoveList();
+        MoveList savedGame = new MoveList();
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
@@ -138,84 +136,34 @@ public class ChessGameActivity extends AppCompatActivity implements NoticeResign
             //}
         });
 
-        final Button resign = findViewById(R.id.resign);
-        resign.setOnClickListener(new View.OnClickListener() {
+        final Button next = findViewById(R.id.next);
+        next.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                String color = "w";
+                if(current[0] == PLAYER.BLACK){
+                    color = "b";
+                }
                 game = GAMESTATE.WIN;
-                openResignDialog();
-            }
-        });
-
-        final Button draw = findViewById(R.id.draw);
-        draw.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                game = GAMESTATE.DRAW;
-                openResignDialog();
-            }
-        });
-
-        final Button undo = findViewById(R.id.undo);
-        undo.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if(current[0] == PLAYER.WHITE && !savedGame.isEmpty()){
-                    testBoard.undo();
-                    savedGame.undo();
-                    Snackbar.make(v, "Undid black's last move", Snackbar.LENGTH_SHORT)
-                            .setAction("Action", null).show();
-                    numbers = flattenArray(testBoard.board, numbers);
-                    adapter.notifyDataSetChanged();
-                    gridView.invalidate();
-                    current[0] = PLAYER.BLACK;
-                    status.setText("Black's move!");
-                }
-                else if (current[0] == PLAYER.BLACK && !savedGame.isEmpty()){
-                    testBoard.undo();
-                    savedGame.undo();
-                    Snackbar.make(v, "Undid white's last move", Snackbar.LENGTH_SHORT)
-                            .setAction("Action", null).show();
-                    numbers = flattenArray(testBoard.board, numbers);
-                    adapter.notifyDataSetChanged();
-                    gridView.invalidate();
-                    current[0] = PLAYER.WHITE;
-                    status.setText("White's move!");
-                }
-                else{
-                    Snackbar.make(v, "No moves to undo!", Snackbar.LENGTH_SHORT)
-                            .setAction("Action", null).show();
-                }
-            }
-        });
-
-        final Button AI = findViewById(R.id.AI);
-        AI.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if(current[0] == PLAYER.WHITE){
-                    Move random = testBoard.random("w");
-                    savedGame.addMove(random);
-                    Snackbar.make(v, "AI moved for white!", Snackbar.LENGTH_SHORT)
-                            .setAction("Action", null).show();
+                Move currMove = savedGame.getMove(moveCounter);
+                try {
+                    testBoard.movePiece(color, currMove.getOldX(), currMove.getOldY(), currMove.getNewX(), currMove.getNewY());
                     numbers = flattenArray(testBoard.board, numbers);
                     adapter.notifyDataSetChanged();
                     gridView.invalidate();
                     isFirstPieceSelected[0] = false;
-                    current[0] = PLAYER.BLACK;
-                    status.setText("Black's move!");
+                    if(current[0] == PLAYER.WHITE){
+                        current[0] = PLAYER.BLACK;
+                        status.setText("Black's move!");
                     }
-                else{
-                    Move random = testBoard.random("b");
-                    savedGame.addMove(random);
-                    Snackbar.make(v, "AI moved for black!", Snackbar.LENGTH_SHORT)
-                            .setAction("Action", null).show();
-                    numbers = flattenArray(testBoard.board, numbers);
-                    adapter.notifyDataSetChanged();
-                    gridView.invalidate();
-                    current[0] = PLAYER.WHITE;
-                    status.setText("White's move!");}
-
+                    else{
+                        current[0] = PLAYER.WHITE;
+                        status.setText("White's move!");
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
-
-
     }
 
     public Piece[] flattenArray(Piece[][] threedee, Piece[] twodee){
@@ -228,61 +176,4 @@ public class ChessGameActivity extends AppCompatActivity implements NoticeResign
         }
         return twodee;
     }
-
-    public void openResignDialog(){
-        ResignDialog exampleDialog = new NoticeResignDialog();
-        if(game == GAMESTATE.DRAW){
-            exampleDialog.setEndgame("draw");
-        }
-        else if(current[0] == PLAYER.WHITE){
-            exampleDialog.setColor("Black");
-        }
-        else if(current[0] == PLAYER.BLACK){
-            exampleDialog.setColor("White");
-        }
-        exampleDialog.show(getSupportFragmentManager(), "NoticeResignDialog");
-    }
-
-    // The dialog fragment receives a reference to this Activity through the
-    // Fragment.onAttach() callback, which it uses to call the following methods
-    // defined by the NoticeDialogFragment.NoticeDialogListener interface
-    @Override
-    public void onDialogPositiveClick(ResignDialog dialog) {
-        openSaveGame();
-    }
-
-    @Override
-    public void onDialogNegativeClick(ResignDialog dialog) {
-        finish();
-    }
-
-    public void openSaveGame(){
-        SaveGame game = new NoticeSaveGame();
-        game.show(getSupportFragmentManager(), "NoticeSaveGame");
-    }
-
-    @Override
-    public void onDialogPositiveSaveClick(SaveGame dialog, String name) {
-        //ArrayList<MoveList> allGames = GameList.getInstance().getData();
-        Date currentDate = Calendar.getInstance().getTime();
-        DateFormat dateFormat = DateFormat.getDateInstance();
-        String strDate = dateFormat.format(currentDate);
-        savedGame.setName(name);
-        savedGame.setDate(strDate);
-
-        System.out.println(savedGame);
-        System.out.println(savedGame.getName());
-        System.out.println(savedGame.getDate());
-
-        Intent intent = new Intent();
-        intent.putExtra("savedGame", savedGame);
-        setResult(RESULT_OK, intent);
-        finish();
-    }
-
-    @Override
-    public void onDialogNegativeSaveClick(SaveGame dialog) {
-        finish();
-    }
-
 }

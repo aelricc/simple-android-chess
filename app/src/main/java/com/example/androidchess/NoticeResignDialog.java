@@ -47,13 +47,13 @@ public class NoticeResignDialog extends ResignDialog{
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(titletext)
                 .setMessage(messagetext)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // Send the positive button event back to the host activity
                         listener.onDialogPositiveClick(NoticeResignDialog.this);
                     }
                 })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // Send the negative button event back to the host activity
                         listener.onDialogNegativeClick(NoticeResignDialog.this);

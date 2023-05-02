@@ -3,11 +3,11 @@ package com.example.androidchess;
 
 import java.io.Serializable;
 
-public class Move implements Serializable {
+public class Move{
     int oldX, oldY, newX, newY;
     String type;
 
-    static final long serialVersionUID = 1L;
+
 
     public Move(int oldX, int oldY, int newX, int newY){
         this.oldX = oldX;
@@ -39,5 +39,9 @@ public class Move implements Serializable {
 
     public int getOldY() {
         return oldY;
+    }
+
+    public String toString(){
+        return "( " + oldX + ", " + oldY + ") " + "to " + "( " + newX + ", " + newY + ") ";
     }
 }
