@@ -1,4 +1,6 @@
 package com.example.androidchess.pieces;
+import android.util.Log;
+
 import com.example.androidchess.chess.*;
 
 /**

@@ -1,4 +1,6 @@
 package com.example.androidchess.pieces;
+import android.util.Log;
+
 import com.example.androidchess.chess.*;
 
 /**
@@ -40,7 +42,7 @@ public class Rook extends Piece implements LinearPiece{
     }
     @Override
     public boolean validMove(int oldX, int oldY, int newX, int newY, boolean isCapture, Board b) {
-        if(oldX == newX || newY == oldY && !hasPiecesInBetween(oldX, oldY, newX, newY, b)){
+        if((oldX == newX || newY == oldY) && !hasPiecesInBetween(oldX, oldY, newX, newY, b)){
             updatePosition(newX, newY);
             hasMoved = true;
             return true;
